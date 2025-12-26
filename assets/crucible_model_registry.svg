@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Crucible Model Registry Hex Logo">
+  <defs>
+    <linearGradient id="hexFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1F2937"/>
+      <stop offset="0.55" stop-color="#4C1D95"/>
+      <stop offset="1" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="hexStroke" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#D69E2E"/>
+      <stop offset="0.5" stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#475569"/>
+    </linearGradient>
+    <linearGradient id="coreFill" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FCD34D"/>
+      <stop offset="0.5" stop-color="#D69E2E"/>
+      <stop offset="1" stop-color="#B45309"/>
+    </linearGradient>
+    <linearGradient id="coreEdge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FDE68A"/>
+      <stop offset="1" stop-color="#92400E"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="55%">
+      <stop offset="0" stop-color="#6B46C1" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#6B46C1" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="12" height="12" patternUnits="userSpaceOnUse">
+      <path d="M12 0H0V12" fill="none" stroke="#475569" stroke-opacity="0.15" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feOffset dx="0" dy="4" in="SourceAlpha" result="off"/>
+      <feGaussianBlur in="off" stdDeviation="6" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.35 0" result="shadow"/>
+      <feBlend in="SourceGraphic" in2="shadow" mode="normal"/>
+    </filter>
+    <clipPath id="hexClip">
+      <polygon points="100,10 170,50 170,130 100,170 30,130 30,50"/>
+    </clipPath>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <polygon points="100,8 174,50 174,130 100,172 26,130 26,50" fill="url(#hexFill)" stroke="url(#hexStroke)" stroke-width="4"/>
+  </g>
+  <polygon points="100,18 164,54 164,126 100,162 36,126 36,54" fill="none" stroke="#1E293B" stroke-width="2"/>
+
+  <g clip-path="url(#hexClip)">
+    <rect x="20" y="20" width="160" height="160" fill="url(#grid)"/>
+    <circle cx="100" cy="90" r="70" fill="url(#glow)"/>
+  </g>
+
+  <g clip-path="url(#hexClip)" stroke="#94A3B8" stroke-opacity="0.75" stroke-width="2">
+    <line x1="48" y1="86" x2="74" y2="92"/>
+    <line x1="48" y1="114" x2="74" y2="108"/>
+    <line x1="152" y1="86" x2="126" y2="92"/>
+    <line x1="152" y1="114" x2="126" y2="108"/>
+  </g>
+
+  <g clip-path="url(#hexClip)">
+    <circle cx="44" cy="86" r="6" fill="#D69E2E" stroke="#4C1D95" stroke-width="2"/>
+    <circle cx="44" cy="114" r="6" fill="#D69E2E" stroke="#4C1D95" stroke-width="2"/>
+    <circle cx="156" cy="86" r="6" fill="#D69E2E" stroke="#4C1D95" stroke-width="2"/>
+    <circle cx="156" cy="114" r="6" fill="#D69E2E" stroke="#4C1D95" stroke-width="2"/>
+  </g>
+
+  <g clip-path="url(#hexClip)">
+    <ellipse cx="100" cy="72" rx="34" ry="10" fill="url(#coreFill)" stroke="url(#coreEdge)" stroke-width="2"/>
+    <rect x="66" y="72" width="68" height="22" fill="url(#coreFill)" stroke="url(#coreEdge)" stroke-width="2"/>
+    <ellipse cx="100" cy="94" rx="34" ry="10" fill="url(#coreFill)" stroke="url(#coreEdge)" stroke-width="2"/>
+
+    <rect x="66" y="94" width="68" height="22" fill="url(#coreFill)" stroke="url(#coreEdge)" stroke-width="2"/>
+    <ellipse cx="100" cy="116" rx="34" ry="10" fill="url(#coreFill)" stroke="url(#coreEdge)" stroke-width="2"/>
+
+    <path d="M76 70c8 6 40 6 48 0" fill="none" stroke="#FDE68A" stroke-opacity="0.7" stroke-width="2"/>
+    <path d="M76 92c8 6 40 6 48 0" fill="none" stroke="#FDE68A" stroke-opacity="0.6" stroke-width="2"/>
+    <path d="M76 114c8 6 40 6 48 0" fill="none" stroke="#FDE68A" stroke-opacity="0.5" stroke-width="2"/>
+  </g>
+
+  <g clip-path="url(#hexClip)" stroke="#6B46C1" stroke-width="2" stroke-linecap="round">
+    <path d="M86 130l-8 14"/>
+    <path d="M114 130l8 14"/>
+    <path d="M78 144h44"/>
+  </g>
+</svg>

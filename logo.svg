@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Crucible model registry logo">
+  <title>Crucible Model Registry</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="56" y1="44" x2="104" y2="28" stroke="#475569" stroke-width="6"/>
+    <line x1="104" y1="28" x2="152" y2="44" stroke="#475569" stroke-width="6"/>
+    <line x1="152" y1="44" x2="200" y2="28" stroke="#475569" stroke-width="6"/>
+  </g>
+  <g fill="#475569">
+    <circle cx="56" cy="44" r="8"/>
+    <circle cx="104" cy="28" r="8"/>
+    <circle cx="152" cy="44" r="8"/>
+    <circle cx="200" cy="28" r="8"/>
+  </g>
+  <path d="M104 28h48v32c0 6 2 12 6 16l26 28c12 13 18 30 18 47v39c0 25-20 46-46 46H100c-25 0-46-21-46-46v-39c0-17 6-34 18-47l26-28c4-4 6-10 6-16z" fill="none" stroke="#6B46C1" stroke-width="8"/>
+  <path d="M78 148c8 10 20 16 34 16h32c14 0 26-6 34-16v32c0 14-11 26-26 26H104c-15 0-26-12-26-26z" fill="#D69E2E"/>
+  <rect x="112" y="172" width="32" height="24" rx="4" fill="none" stroke="#475569" stroke-width="4"/>
+  <rect x="118" y="180" width="20" height="8" rx="2" fill="#475569"/>
+</svg>
