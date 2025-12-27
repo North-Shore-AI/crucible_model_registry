@@ -5,7 +5,28 @@ defmodule CrucibleModelRegistry.Stages.Register do
     @behaviour Crucible.Stage
   end
 
+  @impl true
+  def describe(_opts) do
+    %{
+      name: :model_register,
+      description: "Registers a trained model version in the model registry",
+      required: [:model_name, :recipe, :base_model],
+      optional: [:version, :training_config, :artifacts, :parent_version_id, :lineage_type],
+      types: %{
+        model_name: :string,
+        recipe: :atom,
+        base_model: :string,
+        version: :string,
+        training_config: :map,
+        artifacts: {:list, :map},
+        parent_version_id: :string,
+        lineage_type: {:enum, [:fine_tune, :distillation, :merge]}
+      }
+    }
+  end
+
   @doc "Run the registration stage."
+  @impl true
   @spec run(term(), map()) :: {:ok, term()} | {:error, term()}
   def run(context, opts) when is_map(opts) do
     artifacts = resolve_artifacts(context, opts)

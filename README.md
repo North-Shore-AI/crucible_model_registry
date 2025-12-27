@@ -124,16 +124,69 @@ descendants = CrucibleModelRegistry.get_descendants(version)
 :ok = CrucibleModelRegistry.download_artifact(artifact, "/tmp/model.bin")
 ```
 
-## Crucible Stages
+## Model Registry Stages
+
+This package provides Crucible stages for model lifecycle management:
+
+- `:model_register` - Register trained model versions with lineage tracking
+- `:model_promote` - Promote model versions through lifecycle stages
+
+All stages implement the `Crucible.Stage` behaviour with full describe/1 schemas.
+
+### Register Stage
+
+Registers a trained model version in the model registry.
+
+#### Required Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `:model_name` | `:string` | Name of the model |
+| `:recipe` | `:atom` | Training recipe used |
+| `:base_model` | `:string` | Base model identifier |
+
+#### Optional Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `:version` | `:string` | Version string (auto-generated if not provided) |
+| `:training_config` | `:map` | Training configuration |
+| `:artifacts` | `{:list, :map}` | List of artifact metadata |
+| `:parent_version_id` | `:string` | Parent version for lineage |
+| `:lineage_type` | `{:enum, [:fine_tune, :distillation, :merge]}` | Type of lineage relationship |
+
+#### Example
 
 ```elixir
 CrucibleModelRegistry.Stages.Register.run(context,
   model_name: "math-tutor",
   version: "1.0.0",
-  recipe: "sl_basic",
+  recipe: :sl_basic,
   base_model: "meta-llama/Llama-3.1-8B",
   training_config: %{"lr" => 1.0e-4}
 )
+```
+
+### Promote Stage
+
+Promotes a model version to a lifecycle stage.
+
+#### Required Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `:stage` | `{:enum, [:development, :staging, :production, :archived]}` | Target lifecycle stage |
+
+#### Optional Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `:version` | `:map` | Model version (uses context artifact if not provided) |
+
+#### Example
+
+```elixir
+CrucibleModelRegistry.Stages.Promote.run(context, stage: :production)
 ```
 
 ## Telemetry

@@ -1,7 +1,7 @@
 defmodule CrucibleModelRegistry.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.2.0"
   @source_url "https://github.com/North-Shore-AI/crucible_model_registry"
 
   def project do
@@ -43,8 +43,8 @@ defmodule CrucibleModelRegistry.MixProject do
       {:ex_aws_s3, "~> 2.5"},
       {:hackney, "~> 1.20"},
       {:sweet_xml, "~> 0.7"},
-      {:crucible_framework, "~> 0.4.0"},
-      {:crucible_ir, "~> 0.2.0"},
+      {:crucible_framework, "~> 0.5.0"},
+      {:crucible_ir, "~> 0.2.1"},
       {:mox, "~> 1.1", only: :test},
       {:ex_machina, "~> 2.7", only: :test},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},

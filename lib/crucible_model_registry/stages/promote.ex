@@ -5,7 +5,22 @@ defmodule CrucibleModelRegistry.Stages.Promote do
     @behaviour Crucible.Stage
   end
 
+  @impl true
+  def describe(_opts) do
+    %{
+      name: :model_promote,
+      description: "Promotes a model version to a lifecycle stage (staging, production, etc.)",
+      required: [:stage],
+      optional: [:version],
+      types: %{
+        stage: {:enum, [:development, :staging, :production, :archived]},
+        version: :map
+      }
+    }
+  end
+
   @doc "Run the promote stage."
+  @impl true
   @spec run(term(), map()) :: {:ok, term()} | {:error, term()}
   def run(context, opts) when is_map(opts) do
     stage = Map.fetch!(opts, :stage)
