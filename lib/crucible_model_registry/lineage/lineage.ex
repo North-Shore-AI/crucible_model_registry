@@ -4,8 +4,9 @@ defmodule CrucibleModelRegistry.Lineage do
   import Ecto.Query
 
   alias CrucibleModelRegistry.Lineage.Graph
-  alias CrucibleModelRegistry.Repo
   alias CrucibleModelRegistry.Schemas.{LineageEdge, ModelVersion}
+
+  defp repo, do: CrucibleModelRegistry.repo()
 
   @doc "Returns all ancestors for a model version."
   @spec ancestors(ModelVersion.t()) :: [ModelVersion.t()]
@@ -32,7 +33,7 @@ defmodule CrucibleModelRegistry.Lineage do
     with :ok <- ensure_acyclic(source_id, target_id) do
       %LineageEdge{}
       |> LineageEdge.changeset(attrs)
-      |> Repo.insert()
+      |> repo().insert()
     end
   end
 
@@ -53,7 +54,7 @@ defmodule CrucibleModelRegistry.Lineage do
 
   defp build_graph do
     LineageEdge
-    |> Repo.all()
+    |> repo().all()
     |> Graph.build()
   end
 
@@ -62,6 +63,6 @@ defmodule CrucibleModelRegistry.Lineage do
   defp load_versions(ids) do
     ModelVersion
     |> where([v], v.id in ^ids)
-    |> Repo.all()
+    |> repo().all()
   end
 end

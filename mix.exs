@@ -1,14 +1,14 @@
 defmodule CrucibleModelRegistry.MixProject do
   use Mix.Project
 
-  @version "0.2.0"
+  @version "0.3.0"
   @source_url "https://github.com/North-Shore-AI/crucible_model_registry"
 
   def project do
     [
       app: :crucible_model_registry,
       version: @version,
-      elixir: "~> 1.18",
+      elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(Mix.env()),
       dialyzer: dialyzer(),
@@ -35,15 +35,15 @@ defmodule CrucibleModelRegistry.MixProject do
   defp deps do
     [
       {:ecto_sql, "~> 3.11"},
-      {:postgrex, "~> 0.18"},
+      {:postgrex, ">= 0.21.1"},
       {:jason, "~> 1.4"},
-      {:telemetry, "~> 1.2"},
+      {:telemetry, "~> 1.3"},
       {:libgraph, "~> 0.16"},
       {:ex_aws, "~> 2.5"},
       {:ex_aws_s3, "~> 2.5"},
       {:hackney, "~> 1.20"},
       {:sweet_xml, "~> 0.7"},
-      {:crucible_framework, "~> 0.5.0"},
+      {:crucible_framework, "~> 0.5.1"},
       {:crucible_ir, "~> 0.2.1"},
       {:mox, "~> 1.1", only: :test},
       {:ex_machina, "~> 2.7", only: :test},

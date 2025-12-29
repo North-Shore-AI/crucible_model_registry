@@ -5,8 +5,9 @@ defmodule CrucibleModelRegistry.Query do
   require Ecto.Query
 
   alias CrucibleModelRegistry.Query.Filters
-  alias CrucibleModelRegistry.Repo
   alias CrucibleModelRegistry.Schemas.ModelVersion
+
+  defp repo, do: CrucibleModelRegistry.repo()
 
   defstruct filters: [], order_by: nil, limit: nil, offset: nil, preloads: []
 
@@ -48,7 +49,7 @@ defmodule CrucibleModelRegistry.Query do
     |> apply_limit(query.limit)
     |> apply_offset(query.offset)
     |> apply_preloads(query.preloads)
-    |> Repo.all()
+    |> repo().all()
   end
 
   @doc "Filter by stage."

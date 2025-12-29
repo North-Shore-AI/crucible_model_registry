@@ -38,16 +38,55 @@ end
 
 ## Configuration
 
+### Database Configuration (Oban Pattern)
+
+CrucibleModelRegistry uses dynamic repo injection - your host application provides the Repo:
+
 ```elixir
 import Config
 
 config :crucible_model_registry,
-  ecto_repos: [CrucibleModelRegistry.Repo],
+  repo: MyApp.Repo,  # Required: host app's Repo module
   storage_backend: :s3,
   storage_opts: [
     bucket: "my-model-artifacts",
     region: "us-east-1"
   ]
+
+# Your host app's Repo configuration
+config :my_app, MyApp.Repo,
+  database: "my_app_dev",
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost"
+```
+
+Then start your Repo in your application's supervision tree:
+
+```elixir
+# lib/my_app/application.ex
+children = [
+  MyApp.Repo,
+  # ... other children
+]
+```
+
+### Migrations
+
+Copy migrations from `deps/crucible_model_registry/priv/repo/migrations/` or run:
+
+```bash
+mix crucible_model_registry.install
+```
+
+### Legacy Mode
+
+For backwards compatibility, set `start_repo: true` to auto-start internal Repo:
+
+```elixir
+config :crucible_model_registry,
+  start_repo: true,
+  ecto_repos: [CrucibleModelRegistry.Repo]
 
 config :crucible_model_registry, CrucibleModelRegistry.Repo,
   database: "crucible_model_registry_dev",
