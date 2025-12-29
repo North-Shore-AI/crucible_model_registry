@@ -9,5 +9,6 @@ config :crucible_model_registry, CrucibleModelRegistry.Repo,
   pool_size: 10
 
 config :crucible_model_registry,
+  repo: CrucibleModelRegistry.Repo,
   storage_backend: :noop,
   storage_opts: []
