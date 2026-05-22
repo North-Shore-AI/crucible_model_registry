@@ -18,7 +18,8 @@ defmodule CrucibleModelRegistry.MixProject do
       source_url: @source_url,
       homepage_url: @source_url,
       docs: docs(),
-      package: package()
+      package: package(),
+      aliases: aliases()
     ]
   end
 
@@ -26,6 +27,16 @@ defmodule CrucibleModelRegistry.MixProject do
     [
       extra_applications: [:crypto, :logger],
       mod: {CrucibleModelRegistry.Application, []}
+    ]
+  end
+
+  def cli do
+    [
+      preferred_envs: [
+        credo: :dev,
+        dialyzer: :dev,
+        docs: :dev
+      ]
     ]
   end
 
@@ -49,7 +60,21 @@ defmodule CrucibleModelRegistry.MixProject do
       {:ex_machina, "~> 2.7", only: :test},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.31", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.40.0", only: [:dev, :test], runtime: false}
+    ]
+  end
+
+  defp aliases do
+    [
+      ci: [
+        "deps.get",
+        "format --check-formatted",
+        "compile --warnings-as-errors",
+        "cmd MIX_ENV=test mix test",
+        "credo --strict",
+        "dialyzer --format short",
+        "docs"
+      ]
     ]
   end
 
