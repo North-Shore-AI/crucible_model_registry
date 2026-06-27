@@ -173,12 +173,15 @@ Pinned artifact bundles may include optional provider compatibility metadata:
       model_id: "Qwen/Qwen3-0.6B",
       artifact_ref: "artifact:qwen3-0.6b-sakana",
       required_signals: [:final_logits],
+      required_activations: ["blocks.0.hook_resid_pre", "unembed.hook_logits"],
+      required_capture_groups: [:residual_streams, :logit_lens],
+      required_generation_features: [:kv_cache_generation_trace],
       required_active_controls: []
     }
   )
 ```
 
-Compatibility checks validate declared provider/model/artifact support surfaces and fail closed for unsupported signals or active controls. They do not choose, rank, or promote artifacts.
+Compatibility checks validate declared provider/model/artifact support surfaces and fail closed for unsupported signals, activation names, capture groups, generation features, or active controls. They do not choose, rank, or promote artifacts.
 
 ## Model Registry Stages
 

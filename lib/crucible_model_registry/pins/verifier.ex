@@ -1,8 +1,8 @@
 defmodule CrucibleModelRegistry.Pins.Verifier do
   @moduledoc "Verifies a materialized artifact bundle against an artifact pin."
 
-  alias CrucibleModelRegistry.ProviderCompatibility
   alias CrucibleModelRegistry.Pins.{ArtifactPin, Receipt}
+  alias CrucibleModelRegistry.ProviderCompatibility
   alias CrucibleModelRegistry.Storage.Utils
 
   @doc "Verifies all files in `pin` exist under `destination` with matching SHA-256 checksums."

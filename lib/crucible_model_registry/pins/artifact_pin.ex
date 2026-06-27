@@ -1,8 +1,8 @@
 defmodule CrucibleModelRegistry.Pins.ArtifactPin do
   @moduledoc "Immutable descriptor for a pinned artifact bundle."
 
-  alias CrucibleModelRegistry.ProviderCompatibility
   alias CrucibleModelRegistry.Pins.RequiredFile
+  alias CrucibleModelRegistry.ProviderCompatibility
 
   @enforce_keys [:version, :repo_id, :revision, :manifest_sha256, :files]
   defstruct [

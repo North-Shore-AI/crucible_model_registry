@@ -68,6 +68,9 @@ defmodule CrucibleModelRegistry.Pins.ArtifactPinTest do
           "model_id" => "Qwen/Qwen3-0.6B",
           "artifact_ref" => "artifact:qwen3-0.6b-sakana",
           "supported_signals" => ["final_logits", "generation_step_logits"],
+          "supported_activations" => ["blocks.0.hook_resid_pre", "unembed.hook_logits"],
+          "supported_capture_groups" => ["residual_streams", "logit_lens"],
+          "supported_generation_features" => ["kv_cache_generation_trace"],
           "supported_active_controls" => ["control_vector"]
         }
       ])
@@ -76,5 +79,13 @@ defmodule CrucibleModelRegistry.Pins.ArtifactPinTest do
     assert [%ProviderCompatibility{} = compatibility] = pin.provider_compatibility
     assert compatibility.provider_kind == "elixir_bumblebee"
     assert compatibility.supported_signals == ["final_logits", "generation_step_logits"]
+
+    assert compatibility.supported_activations == [
+             "blocks.0.hook_resid_pre",
+             "unembed.hook_logits"
+           ]
+
+    assert compatibility.supported_capture_groups == ["residual_streams", "logit_lens"]
+    assert compatibility.supported_generation_features == ["kv_cache_generation_trace"]
   end
 end

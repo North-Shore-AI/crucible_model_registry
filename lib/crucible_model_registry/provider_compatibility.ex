@@ -15,8 +15,18 @@ defmodule CrucibleModelRegistry.ProviderCompatibility do
             supported_signals: [],
             required_signals: [],
             unsupported_signals: [],
+            supported_activations: [],
+            required_activations: [],
+            unsupported_activations: [],
+            supported_capture_groups: [],
+            required_capture_groups: [],
+            unsupported_capture_groups: [],
+            supported_generation_features: [],
+            required_generation_features: [],
+            unsupported_generation_features: [],
             supported_active_controls: [],
             required_active_controls: [],
+            unsupported_active_controls: [],
             metadata: %{}
 
   @type t :: %__MODULE__{}
@@ -41,8 +51,18 @@ defmodule CrucibleModelRegistry.ProviderCompatibility do
       supported_signals: labels(field(attrs, :supported_signals, [])),
       required_signals: labels(field(attrs, :required_signals, [])),
       unsupported_signals: labels(field(attrs, :unsupported_signals, [])),
+      supported_activations: labels(field(attrs, :supported_activations, [])),
+      required_activations: labels(field(attrs, :required_activations, [])),
+      unsupported_activations: labels(field(attrs, :unsupported_activations, [])),
+      supported_capture_groups: labels(field(attrs, :supported_capture_groups, [])),
+      required_capture_groups: labels(field(attrs, :required_capture_groups, [])),
+      unsupported_capture_groups: labels(field(attrs, :unsupported_capture_groups, [])),
+      supported_generation_features: labels(field(attrs, :supported_generation_features, [])),
+      required_generation_features: labels(field(attrs, :required_generation_features, [])),
+      unsupported_generation_features: labels(field(attrs, :unsupported_generation_features, [])),
       supported_active_controls: labels(field(attrs, :supported_active_controls, [])),
       required_active_controls: labels(field(attrs, :required_active_controls, [])),
+      unsupported_active_controls: labels(field(attrs, :unsupported_active_controls, [])),
       metadata: field(attrs, :metadata, %{})
     }
   end
@@ -104,11 +124,35 @@ defmodule CrucibleModelRegistry.ProviderCompatibility do
       )
     )
     |> maybe_unsupported(
+      :unsupported_activations,
+      unsupported(
+        requirement.required_activations,
+        record.supported_activations,
+        record.unsupported_activations
+      )
+    )
+    |> maybe_unsupported(
+      :unsupported_capture_groups,
+      unsupported(
+        requirement.required_capture_groups,
+        record.supported_capture_groups,
+        record.unsupported_capture_groups
+      )
+    )
+    |> maybe_unsupported(
+      :unsupported_generation_features,
+      unsupported(
+        requirement.required_generation_features,
+        record.supported_generation_features,
+        record.unsupported_generation_features
+      )
+    )
+    |> maybe_unsupported(
       :unsupported_active_controls,
       unsupported(
         requirement.required_active_controls,
         record.supported_active_controls,
-        []
+        record.unsupported_active_controls
       )
     )
   end

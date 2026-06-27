@@ -68,6 +68,9 @@ defmodule CrucibleModelRegistry.Pins.FetcherVerifierTest do
                  model_id: "Qwen/Qwen3-0.6B",
                  artifact_ref: "artifact:qwen3-0.6b-sakana",
                  required_signals: [:final_logits],
+                 required_activations: ["blocks.0.hook_resid_pre"],
+                 required_capture_groups: ["residual_streams"],
+                 required_generation_features: ["kv_cache_generation_trace"],
                  required_active_controls: []
                }
              )
@@ -75,7 +78,7 @@ defmodule CrucibleModelRegistry.Pins.FetcherVerifierTest do
     assert receipt.metadata.compatibility.provider_kind == "elixir_bumblebee"
   end
 
-  test "rejects unsupported signal and active-control compatibility requirements" do
+  test "rejects unsupported signal, activation, generation, and active-control compatibility requirements" do
     %{pin: pin, source: source, dest: dest} = fixture_bundle_with_compatibility()
 
     assert {:ok, _receipt} = Fetcher.fetch(pin, dest, downloader: local_downloader(source))
@@ -87,12 +90,36 @@ defmodule CrucibleModelRegistry.Pins.FetcherVerifierTest do
                  model_id: "Qwen/Qwen3-0.6B",
                  artifact_ref: "artifact:qwen3-0.6b-sakana",
                  required_signals: ["hidden_state"],
+                 required_activations: ["blocks.0.attn.hook_q"],
+                 required_capture_groups: ["attention_qkv"],
+                 required_generation_features: ["attention_qkv_generation_trace"],
                  required_active_controls: ["residual_injection"]
                }
              )
 
     assert {:unsupported_signals, ["hidden_state"]} in reasons
+    assert {:unsupported_activations, ["blocks.0.attn.hook_q"]} in reasons
+    assert {:unsupported_capture_groups, ["attention_qkv"]} in reasons
+    assert {:unsupported_generation_features, ["attention_qkv_generation_trace"]} in reasons
     assert {:unsupported_active_controls, ["residual_injection"]} in reasons
+  end
+
+  test "rejects model compatibility metadata that claims unsupported required activations" do
+    %{pin: pin, source: source, dest: dest} = fixture_bundle_with_compatibility()
+
+    assert {:ok, _receipt} = Fetcher.fetch(pin, dest, downloader: local_downloader(source))
+
+    assert {:error, {:incompatible_provider, reasons}} =
+             Verifier.verify(pin, dest,
+               compatibility: %{
+                 provider_kind: "elixir_bumblebee",
+                 model_id: "Qwen/Qwen3-0.6B",
+                 artifact_ref: "artifact:qwen3-0.6b-sakana",
+                 required_activations: ["blocks.0.attn.hook_q"]
+               }
+             )
+
+    assert {:unsupported_activations, ["blocks.0.attn.hook_q"]} in reasons
   end
 
   test "returns a checksum mismatch instead of silently accepting bad files" do
@@ -144,6 +171,12 @@ defmodule CrucibleModelRegistry.Pins.FetcherVerifierTest do
           artifact_ref: "artifact:qwen3-0.6b-sakana",
           supported_signals: ["final_logits", "generation_step_logits"],
           unsupported_signals: ["hidden_state"],
+          supported_activations: ["blocks.0.hook_resid_pre", "unembed.hook_logits"],
+          unsupported_activations: ["blocks.0.attn.hook_q"],
+          supported_capture_groups: ["residual_streams", "logit_lens"],
+          unsupported_capture_groups: ["attention_qkv"],
+          supported_generation_features: ["kv_cache_generation_trace"],
+          unsupported_generation_features: ["attention_qkv_generation_trace"],
           supported_active_controls: ["control_vector"]
         }
       ])

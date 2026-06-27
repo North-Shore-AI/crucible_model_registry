@@ -70,7 +70,7 @@ defmodule CrucibleModelRegistry.MixProject do
         "deps.get",
         "format --check-formatted",
         "compile --warnings-as-errors",
-        "cmd MIX_ENV=test mix test",
+        "cmd env MIX_ENV=test mix test",
         "credo --strict",
         "dialyzer --format short",
         "docs"
