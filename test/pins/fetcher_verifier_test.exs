@@ -56,6 +56,45 @@ defmodule CrucibleModelRegistry.Pins.FetcherVerifierTest do
     assert Enum.map(receipt.files, & &1.status) == [:verified, :verified]
   end
 
+  test "verifies provider model artifact compatibility metadata" do
+    %{pin: pin, source: source, dest: dest} = fixture_bundle_with_compatibility()
+
+    assert {:ok, _receipt} = Fetcher.fetch(pin, dest, downloader: local_downloader(source))
+
+    assert {:ok, %Receipt{} = receipt} =
+             Verifier.verify(pin, dest,
+               compatibility: %{
+                 provider_kind: :elixir_bumblebee,
+                 model_id: "Qwen/Qwen3-0.6B",
+                 artifact_ref: "artifact:qwen3-0.6b-sakana",
+                 required_signals: [:final_logits],
+                 required_active_controls: []
+               }
+             )
+
+    assert receipt.metadata.compatibility.provider_kind == "elixir_bumblebee"
+  end
+
+  test "rejects unsupported signal and active-control compatibility requirements" do
+    %{pin: pin, source: source, dest: dest} = fixture_bundle_with_compatibility()
+
+    assert {:ok, _receipt} = Fetcher.fetch(pin, dest, downloader: local_downloader(source))
+
+    assert {:error, {:incompatible_provider, reasons}} =
+             Verifier.verify(pin, dest,
+               compatibility: %{
+                 provider_kind: "elixir_bumblebee",
+                 model_id: "Qwen/Qwen3-0.6B",
+                 artifact_ref: "artifact:qwen3-0.6b-sakana",
+                 required_signals: ["hidden_state"],
+                 required_active_controls: ["residual_injection"]
+               }
+             )
+
+    assert {:unsupported_signals, ["hidden_state"]} in reasons
+    assert {:unsupported_active_controls, ["residual_injection"]} in reasons
+  end
+
   test "returns a checksum mismatch instead of silently accepting bad files" do
     %{pin: pin, source: source, dest: dest} = fixture_bundle()
 
@@ -90,6 +129,27 @@ defmodule CrucibleModelRegistry.Pins.FetcherVerifierTest do
       })
 
     %{pin: pin, source: source, dest: dest}
+  end
+
+  defp fixture_bundle_with_compatibility do
+    bundle = fixture_bundle()
+
+    {:ok, pin} =
+      bundle.pin
+      |> Map.from_struct()
+      |> Map.put(:provider_compatibility, [
+        %{
+          provider_kind: "elixir_bumblebee",
+          model_id: "Qwen/Qwen3-0.6B",
+          artifact_ref: "artifact:qwen3-0.6b-sakana",
+          supported_signals: ["final_logits", "generation_step_logits"],
+          unsupported_signals: ["hidden_state"],
+          supported_active_controls: ["control_vector"]
+        }
+      ])
+      |> ArtifactPin.new()
+
+    %{bundle | pin: pin}
   end
 
   defp local_downloader(source) do

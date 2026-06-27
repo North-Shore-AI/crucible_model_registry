@@ -1,7 +1,8 @@
 defmodule CrucibleModelRegistry.Pins.ArtifactPinTest do
   use ExUnit.Case, async: true
 
-  alias CrucibleModelRegistry.Pins.{ArtifactPin, RequiredFile}
+  alias CrucibleModelRegistry.{Pins.ArtifactPin, ProviderCompatibility}
+  alias CrucibleModelRegistry.Pins.RequiredFile
 
   @fixture Path.expand("../fixtures/trinity_artifact_pin.json", __DIR__)
 
@@ -54,5 +55,26 @@ defmodule CrucibleModelRegistry.Pins.ArtifactPinTest do
 
     assert {:error, %ArgumentError{message: message}} = ArtifactPin.new(attrs)
     assert message =~ "duplicate required file path"
+  end
+
+  test "loads optional provider compatibility records" do
+    attrs =
+      @fixture
+      |> File.read!()
+      |> Jason.decode!()
+      |> Map.put("provider_compatibility", [
+        %{
+          "provider_kind" => "elixir_bumblebee",
+          "model_id" => "Qwen/Qwen3-0.6B",
+          "artifact_ref" => "artifact:qwen3-0.6b-sakana",
+          "supported_signals" => ["final_logits", "generation_step_logits"],
+          "supported_active_controls" => ["control_vector"]
+        }
+      ])
+
+    assert {:ok, %ArtifactPin{} = pin} = ArtifactPin.new(attrs)
+    assert [%ProviderCompatibility{} = compatibility] = pin.provider_compatibility
+    assert compatibility.provider_kind == "elixir_bumblebee"
+    assert compatibility.supported_signals == ["final_logits", "generation_step_logits"]
   end
 end

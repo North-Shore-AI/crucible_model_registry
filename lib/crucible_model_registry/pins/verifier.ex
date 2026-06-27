@@ -1,6 +1,7 @@
 defmodule CrucibleModelRegistry.Pins.Verifier do
   @moduledoc "Verifies a materialized artifact bundle against an artifact pin."
 
+  alias CrucibleModelRegistry.ProviderCompatibility
   alias CrucibleModelRegistry.Pins.{ArtifactPin, Receipt}
   alias CrucibleModelRegistry.Storage.Utils
 
@@ -9,8 +10,13 @@ defmodule CrucibleModelRegistry.Pins.Verifier do
   def verify(%ArtifactPin{} = pin, destination, opts \\ []) when is_list(opts) do
     destination = Path.expand(destination)
 
-    with {:ok, files} <- verify_files(pin.files, destination) do
-      {:ok, Receipt.new(:verify, pin, destination, files, created_at: now(opts))}
+    with {:ok, files} <- verify_files(pin.files, destination),
+         {:ok, compatibility} <- verify_compatibility(pin, opts) do
+      {:ok,
+       Receipt.new(:verify, pin, destination, files,
+         created_at: now(opts),
+         metadata: receipt_metadata(compatibility)
+       )}
     end
   rescue
     exception -> {:error, exception}
@@ -80,6 +86,18 @@ defmodule CrucibleModelRegistry.Pins.Verifier do
       {:error, _reason} = error -> error
     end
   end
+
+  defp verify_compatibility(%ArtifactPin{} = pin, opts) do
+    case Keyword.get(opts, :compatibility) do
+      nil -> {:ok, nil}
+      requirement -> ArtifactPin.validate_compatibility(pin, requirement)
+    end
+  end
+
+  defp receipt_metadata(nil), do: %{}
+
+  defp receipt_metadata(%ProviderCompatibility{} = compatibility),
+    do: %{compatibility: ProviderCompatibility.to_map(compatibility)}
 
   defp now(opts) do
     opts

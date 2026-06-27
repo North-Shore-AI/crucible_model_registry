@@ -1,17 +1,28 @@
 defmodule CrucibleModelRegistry.Pins.ArtifactPin do
   @moduledoc "Immutable descriptor for a pinned artifact bundle."
 
+  alias CrucibleModelRegistry.ProviderCompatibility
   alias CrucibleModelRegistry.Pins.RequiredFile
 
   @enforce_keys [:version, :repo_id, :revision, :manifest_sha256, :files]
-  defstruct [:version, :repo_id, :revision, :manifest_sha256, :files]
+  defstruct [
+    :version,
+    :repo_id,
+    :revision,
+    :manifest_sha256,
+    :files,
+    provider_compatibility: [],
+    metadata: %{}
+  ]
 
   @type t :: %__MODULE__{
           version: pos_integer(),
           repo_id: String.t(),
           revision: String.t(),
           manifest_sha256: String.t(),
-          files: [RequiredFile.t()]
+          files: [RequiredFile.t()],
+          provider_compatibility: [ProviderCompatibility.t()],
+          metadata: map()
         }
 
   @supported_version 1
@@ -67,8 +78,16 @@ defmodule CrucibleModelRegistry.Pins.ArtifactPin do
       repo_id: required_string!(attrs, "repo_id"),
       revision: required_string!(attrs, "revision"),
       manifest_sha256: manifest_sha256,
-      files: files
+      files: files,
+      provider_compatibility: provider_compatibility(attrs),
+      metadata: optional_map(attrs, "metadata")
     }
+  end
+
+  @spec validate_compatibility(t(), map() | keyword() | ProviderCompatibility.t()) ::
+          {:ok, ProviderCompatibility.t()} | {:error, {:incompatible_provider, [term()]}}
+  def validate_compatibility(%__MODULE__{} = pin, requirement) do
+    ProviderCompatibility.validate(pin.provider_compatibility, requirement)
   end
 
   defp validate_duplicate_paths!(files) do
@@ -117,10 +136,37 @@ defmodule CrucibleModelRegistry.Pins.ArtifactPin do
     end
   end
 
+  defp provider_compatibility(attrs) do
+    attrs
+    |> optional_list("provider_compatibility")
+    |> Enum.map(&ProviderCompatibility.new!/1)
+  end
+
+  defp optional_list(attrs, key) do
+    case field(attrs, key) do
+      nil -> []
+      value when is_list(value) -> value
+      _ -> raise ArgumentError, "#{key} must be a list"
+    end
+  end
+
+  defp optional_map(attrs, key) do
+    case field(attrs, key) do
+      nil -> %{}
+      value when is_map(value) -> value
+      _ -> raise ArgumentError, "#{key} must be a map"
+    end
+  end
+
   defp field(attrs, "version"), do: Map.get(attrs, "version", Map.get(attrs, :version))
   defp field(attrs, "repo_id"), do: Map.get(attrs, "repo_id", Map.get(attrs, :repo_id))
   defp field(attrs, "revision"), do: Map.get(attrs, "revision", Map.get(attrs, :revision))
   defp field(attrs, "files"), do: Map.get(attrs, "files", Map.get(attrs, :files))
+
+  defp field(attrs, "provider_compatibility"),
+    do: Map.get(attrs, "provider_compatibility", Map.get(attrs, :provider_compatibility))
+
+  defp field(attrs, "metadata"), do: Map.get(attrs, "metadata", Map.get(attrs, :metadata))
 
   defp field(attrs, "manifest_sha256"),
     do: Map.get(attrs, "manifest_sha256", Map.get(attrs, :manifest_sha256))

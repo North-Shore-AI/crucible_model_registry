@@ -163,6 +163,23 @@ descendants = CrucibleModelRegistry.get_descendants(version)
 :ok = CrucibleModelRegistry.download_artifact(artifact, "/tmp/model.bin")
 ```
 
+Pinned artifact bundles may include optional provider compatibility metadata:
+
+```elixir
+{:ok, receipt} =
+  CrucibleModelRegistry.Pins.Verifier.verify(pin, "/models/qwen",
+    compatibility: %{
+      provider_kind: :elixir_bumblebee,
+      model_id: "Qwen/Qwen3-0.6B",
+      artifact_ref: "artifact:qwen3-0.6b-sakana",
+      required_signals: [:final_logits],
+      required_active_controls: []
+    }
+  )
+```
+
+Compatibility checks validate declared provider/model/artifact support surfaces and fail closed for unsupported signals or active controls. They do not choose, rank, or promote artifacts.
+
 ## Model Registry Stages
 
 This package provides Crucible stages for model lifecycle management:
