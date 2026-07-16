@@ -45,22 +45,22 @@ defmodule CrucibleModelRegistry.MixProject do
 
   defp deps do
     [
-      {:ecto_sql, "~> 3.11"},
-      {:postgrex, ">= 0.21.1"},
+      {:ecto_sql, "~> 3.14"},
+      {:postgrex, "~> 0.22.3"},
       {:jason, "~> 1.4"},
-      {:telemetry, "~> 1.3"},
+      {:telemetry, "~> 1.4"},
       {:libgraph, "~> 0.16"},
-      {:ex_aws, "~> 2.5"},
+      {:ex_aws, "~> 2.7"},
       {:ex_aws_s3, "~> 2.5"},
-      {:hackney, "~> 1.20"},
-      {:sweet_xml, "~> 0.7"},
+      {:hackney, "~> 4.6"},
+      {:sweet_xml, "~> 0.7.5"},
       {:crucible_framework, "~> 0.5.2"},
-      {:crucible_ir, "~> 0.2.1"},
-      {:mox, "~> 1.1", only: :test},
-      {:ex_machina, "~> 2.7", only: :test},
+      {:crucible_ir, "~> 0.3.0", override: true},
+      {:mox, "~> 1.2", only: :test},
+      {:ex_machina, "~> 2.8", only: :test},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.40.0", only: [:dev, :test], runtime: false}
+      {:ex_doc, "~> 0.40.3", only: [:dev, :test], runtime: false}
     ]
   end
 
